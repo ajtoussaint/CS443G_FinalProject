@@ -41,12 +41,16 @@
                 }
             }
             echo "<div align='center'>";
+            echo "<a href='/Industry/Index.php'>Return to Home</a>";
+            echo "</div>";
+            echo "<br></br>";
+            echo "<div align='center'>";
             echo "<button type='button' id='addRegulation'>Add New Regulation</button>";
             echo "</div>";
             echo <<<NEW_REG_FORM
             <br></br>
             <div id='newRegForm' align='center' style='display: none !important;'>
-                <form id='addReg' action="/Industry/Regulations/Index.php" method="post" style='width:50%; border:solid; padding:1em; position:relative;' align='left'>
+                <form id='addReg' action="/Industry/Regulations.php" method="post" style='width:50%; min-width:20ch; border:solid; padding:1em; position:relative;' align='left'>
                     <input form='addReg' type='hidden' name='Action' value='POST' />
                     <h3 style='margin:0'>Citation</h3>
                     <input form='addReg' type='text' name='Citation' maxlength='20'/>
@@ -86,8 +90,8 @@
         }
     ?>
     <div id='confirmDelete' style='display:none; text-align:center; align-items:center; width:100vw; height:100vh; background:rgba(100,100,100,0.5);position:absolute; top:0; left:0;'>
-        <div style='background:white; border:solid; width:35%; margin:10% auto; height:20ch;'>
-            <button id="cancelDelete" type='button'>No, go back</button>
+        <div style='background:white; border:solid; width:35%; margin:10% auto; height: auto;'>
+            <button id="cancelDelete" type='button' style='margin-bottom:2ch;'>No, go back</button>
         </div>
     </div>
 </body>
@@ -119,7 +123,7 @@
             var text = textElement.text();
             html = '';
             html += "<td align='center' style='width:20ch;'>";
-            html += '<form id="editForm" action="/Industry/Regulations/Index.php" method="post">';
+            html += '<form id="editForm" action="/Industry/Regulations.php" method="post">';
             html += "<input type='hidden' name='Action' value='PUT' />";
             html += "<input type='hidden' name='Citation' value='"+ citation +"'/>";
             html += citation;
@@ -130,7 +134,7 @@
             html += "<td align='center' style='width:8ch;'>";
             html += "<input type='submit' form='editForm' value='Update' />";
             html += "<br></br>";
-            html += "<a href='/industry/Regulations'>cancel</a>";
+            html += "<a href='/industry/Regulations.php'>cancel</a>";
             html += "</td>";
             $("#"+number).empty();
             $("#"+number).append(html);
@@ -154,13 +158,13 @@
     })
 
     $(document).ready(function() {
-        var html = "<form id='deleteReg' action='/Industry/Regulations/Index.php' method='post'>";
+        var html = "<form id='deleteReg' action='/Industry/Regulations.php' method='post'>";
         html += "<input form='deleteReg' type='hidden' name='Action' value='REMOVE'/>";
         html += "<input form='deleteReg' id='regToDelete' type='hidden' name='Citation' value=''/>";
         html += "<br></br>";
         html += "<div>Are you sure you want to delete this regulation? This action cannot be undone.</div>";
         html += "<br></br>";
-        html += "<input form='deleteReg' type='submit' value='Delete Regualtion' style='color:red; margin-right:10ch;'/>";
+        html += "<input form='deleteReg' type='submit' value='Delete Regualtion' style='color:red; margin:auto;'/>";
         html += "</form>";
         $("#confirmDelete").find("div").prepend(html);
     })
