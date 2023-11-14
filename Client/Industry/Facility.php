@@ -119,31 +119,73 @@
                     $fueled[$tuple["Unit_id"]] = $tuple["Fuel_consumption"];
                 }
 
-                //TODO: get emission limits for each unit to display
+                //TODO: edit unit form
+                
+                //TODO: add limit form
 
+                //TODO: delete limit form
+
+                //TODO: limit details page or show details on this page
+                
                 //display info
                 while($unit = $unitsResult -> fetch_assoc()){
                     $fuel = "";
                     if(isset($fueled[$unit["Unit_id"]]))
                         $fuel = $fueled[$unit["Unit_id"]] . " MMBtu/hr";
+                    $limitQuery = "SELECT * FROM Emission_limit JOIN Unit_limits WHERE Unit_id = '{$unit["Unit_id"]}'";
+                    $limitResult = mysqli_query($connection, $limitQuery);
+                    $limitsHTML ='';
+                    while($limit = $limitResult -> fetch_assoc()){
+                        $limitsHTML += <<<LIMITS
+                            <tr>
+                                <td>{$limit["Parameter"]}:</td>
+                                <td>{$limit["Limit"]} {$limit["Limit_units"]}</td>
+                                <td>X</td>
+                            </tr>
+                        LIMITS;
+                    }
+                    
                     echo <<<EMISSION_UNIT
-                        <div class='emissionUnit' style='width:40%; padding:0.5em; border:solid; display:flex; flex-direction:column;'>
+                        <div class='emissionUnit' style='max-width:40%; min-width:20ch; padding:0.5em; border:solid; display:flex; flex-direction:column;'>
                             <h3 style='align-self:center;'>{$unit["Unit_id"]}</h3>
-                            <div>{$unit["Name"]}</div>
-                            <div>{$unit["Capacity"]} {$unit["Capacity_units"]}</div>
-                            <div>{$fuel}</div>
+                            <div id='{$unit["Unit_id"]}' style='display:block'>
+                                <div>{$unit["Name"]}</div>
+                                <div>{$unit["Capacity"]} {$unit["Capacity_units"]}</div>
+                                <div>{$fuel}</div>
+                            </div>
+                            <form id='editUnit' action='/Industry/Facility.php?AI={$facilityInfo["Agency_interest_number"]}' method='post' style='display:block;'>
+                                <div> Name: <input form ='editUnit' type='text' name='Name' value='{$unit["Name"]}' maxlength='65' /></div>
+                                <br/>
+                                <div>Capacity: <input form ='editUnit' type='number' name='Capacity' value='{$unit["Capacity"]}' step='0.1' />
+                                Units: <input form ='editUnit' type='text' name='Capacity_units' value='{$unit["Capacity_units"]}' maxlength='15' /></div>
+                                <br/>
+                                Unit burns fuel?
+                                <label for='yes'>
+                                    <input id='yesFuelEdit' type='radio' name='fuel' value='Yes' checked />
+                                Yes</label>
+                                <label for='no'>
+                                    <input id='noFuelEdit' type='radio' name='fuel' value='No' />
+                                No</label>
+                                <div style='display:block;' id='fuelInputEdit'>
+                                    Fuel Consumption:
+                                    <input form='editUnit' type='number' name='Fuel_consumption' step='0.1' placeholder='12345.67' value='{$fuel}'/> MMBtu/hr
+                                </div>
+                                <input type='submit' value='Update' form='editUnit' />                                
+                            </form>
                             <br/>
                             <h4 style='margin:0;'>Emission Limits:</h4>
                             <br/>
-
-                            
+                            <table>
+                                {$limitsHTML}
+                            </table>            
                             <button id='showAddLimit' type='button'>Add Limit</button>
                             <br/>
                             <div style='display:flex; justify-content:space-around;'>
-                                <button id='editUnit' type='button'>Edit</button>
+                                <button id='showEditUnit' type='button'>Edit</button>
                                 <button id='deleteUnit' type='button'>Delete</button>
                             </div>
                         </div>
+                        
                     EMISSION_UNIT;
                 }
             ?>
@@ -161,10 +203,22 @@
     })
 
     $("#yesFuel").on('change', function(){
-        if($("#yesFuel").prop("checked", true)){
+        if($("#yesFuel").attr("checked", "checked")){
             $("#fuelInput").css("display", "block");
-        }else{
+        }
+    })
+    $("#noFuel").on('change', function(){
+        if($("#noFuel").prop("checked", true)){
             $("#fuelInput").css("display", "none");
+        }
+    })
+
+    $("#yesFuelEdit").on('change', function(){
+        alert("change");
+        if($("#yesFuelEdit").prop("checked", true)){
+            $("#fuelInputEdit").css("display", "block");
+        }else{
+            $("#fuelInputEdit").css("display", "none");
         }
     })
 
