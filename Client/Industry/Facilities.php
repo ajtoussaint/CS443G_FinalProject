@@ -1,3 +1,30 @@
+<?php
+    $configs = include('config.php');
+    $connection  = mysqli_connect($configs['host'], $configs['username'], $configs['password']);
+    if (!$connection ) {
+        //catch connection error
+        echo "<h2>failed to connect to database</h2>";
+        die('Could not connect: ' . mysqli_error());
+    }else{
+        //connection established
+        mysqli_select_db($connection,$configs["database_name"]);
+        //if posting to add a new facility...
+        if(isset($_POST["Agency_interest_number"])){
+            $san = array();
+            //sanitize
+            foreach($_POST as $key => $value){
+                $san[$key] = str_replace("'","\'",$value);
+            }
+            //add facility to DB
+            $addFacilityQuery = "INSERT INTO `facility` VALUES('{$san["Agency_interest_number"]}', '{$san["Name"]}', '{$san["Permit_number"]}', '{$san["Address"]}');";
+            $addFacilityResult = mysqli_query($connection, $addFacilityQuery);
+            //redirects to the same page to prevent post on refresh
+            header("Location: {$_SERVER['REQUEST_URI']}", true, 301);
+            exit();
+        }
+    }
+?>
+
 <head>
     <script type="text/javascript"src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 </head>
@@ -55,25 +82,7 @@
         </form>
     </div>
     <?php
-        $configs = include('config.php');
-        $connection  = mysqli_connect($configs['host'], $configs['username'], $configs['password']);
-        if (!$connection ) {
-            //catch connection error
-            echo "<h2>failed to connect to database</h2>";
-            die('Could not connect: ' . mysqli_error());
-        }else{
-            //connection established
-
-            //if posting to add a new facility...
-            if(isset($_POST["Agency_interest_number"])){
-                $san = array();
-                //sanitize
-                foreach($_POST as $key => $value){
-                    $san($key) = str_replace("'","\'",$value);
-                }
-                //add facility to DB
-            }
-
+        if ($connection ) {
             //load in data for all facilities and display
             mysqli_select_db($connection,$configs["database_name"]);
             $order = $_GET["order"] ?? "ASC";
@@ -87,7 +96,7 @@
                 echo <<<TABLE_ROW
                 <tr>
                     <td style='text-align:center;'>
-                        <a href='/Industry/Facilities.php?AI={$row["Agency_interest_number"]}' style='text-decoration:none; color:black; width:100%;'>
+                        <a href='/Industry/Facility.php?AI={$row["Agency_interest_number"]}' style='text-decoration:none; color:black; width:100%;'>
                             {$row["Agency_interest_number"]}
                         </a>
                     </td>
