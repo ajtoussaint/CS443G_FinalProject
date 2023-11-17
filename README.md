@@ -3,14 +3,14 @@
 # User Guide
 
 ## Table of Contetnts
-### 1. Installation
-#### 1.1 Running Locally
-#### 1.2 Configuration
+### 1. [Installation](#1installation)
+#### 1.1 [Running Locally](#11running-locally)
+#### 1.2 [Configuration](#12configuration)
 ### 2. [Operation](#2operation)
-#### 2.1. Navigating the Application
-#### 2.2. Regulations
-#### 2.3. Facilities
-#### 2.4 Units and Limits
+#### 2.1. [Navigating the Application](#21navigating-the-application)
+#### 2.2. [Regulations](#22regulations)
+#### 2.3. [Facilities](#23facilites)
+#### 2.4 [Units and Limits](#24units-and-limits)
 
 ## 1.Installation
 
