@@ -36,7 +36,7 @@
                     //check for fuel consumption
                     if($sanSQL["Fuel_consumption"] > 0){
                         $sanSQL["Fuel_consumption"] = round($sanSQL["Fuel_consumption"], 2);
-                        $addFuelQuery = "INSERT INTO Fueled_units VALUES('{$sanSQL["Unit_id"]}', '{$sanSQL["Fuel_consumption"]}');";
+                        $addFuelQuery = "INSERT INTO Fueled_units VALUES('{$sanSQL["Unit_id"]}', '{$sanSQL["Fuel_consumption"]}', '{$sanSQL["Facility_AI_number"]}');";
                         $addFuelResult = mysqli_query($connection, $addFuelQuery);
                     }
                 break;
@@ -72,17 +72,17 @@
                     '{$sanSQL["Limit_units"]}',
                     '{$sanSQL["Compliance_demonstration_method"]}'
                     , {$sanSQL["Citation"]} FROM emission_limit;
-                    INSERT INTO unit_limits (`Unit_id` ,`Limit_id`) SELECT '{$sanSQL["Unit_id"]}', MAX(Limit_id) FROM emission_limit;";
+                    INSERT INTO unit_limits (`Unit_id` ,`Limit_id`, `Facility_AI_number`) SELECT '{$sanSQL["Unit_id"]}', MAX(Limit_id), '{$sanSQL["Facility_AI_number"]}' FROM emission_limit;";
                     $addLimitResult=mysqli_multi_query($connection, $addLimitQuery);
                 break;
 
                 case "addExistingLimit":
-                    $addELimQuery = "INSERT INTO `unit_limits` VALUES('{$sanSQL["Unit_id"]}', '{$sanSQL["Limit_id"]}');";
+                    $addELimQuery = "INSERT INTO `unit_limits` VALUES('{$sanSQL["Unit_id"]}', '{$sanSQL["Limit_id"]}', '{$sanSQL["Facility_AI_number"]}');";
                     $addELimResult = mysqli_query($connection, $addELimQuery);
                 break;
 
                 case "deleteLimit":
-                    $deleteLimitQuery = "DELETE FROM `unit_limits` WHERE `Limit_id` = '{$sanSQL["Limit_id"]}' AND `Unit_id` = '{$sanSQL["Unit_id"]}';
+                    $deleteLimitQuery = "DELETE FROM `unit_limits` WHERE `Limit_id` = '{$sanSQL["Limit_id"]}' AND `Unit_id` = '{$sanSQL["Unit_id"]}' AND `Facility_AI_number` = '{$sanSQL["Facility_AI_number"]}';
                     DELETE FROM `emission_limit` WHERE `Limit_id` NOT IN (SELECT Limit_id FROM unit_limits);";
                     $deleteLimitResult = mysqli_multi_query($connection, $deleteLimitQuery);
                 break;
@@ -179,7 +179,7 @@
                 $unitsQuery = "SELECT * FROM emission_unit WHERE Facility_AI_Number = {$facilityInfo["Agency_interest_number"]};";
                 $unitsResult = mysqli_query($connection, $unitsQuery);
 
-                $fuelQuery = "SELECT E.Unit_id, Fuel_consumption FROM fueled_units AS F JOIN emission_unit AS E ON F.Unit_id=E.Unit_id WHERE Facility_AI_Number = {$facilityInfo["Agency_interest_number"]};";
+                $fuelQuery = "SELECT E.Unit_id, Fuel_consumption FROM fueled_units AS F JOIN emission_unit AS E ON (F.Unit_id=E.Unit_id AND F.Facility_AI_number=E.Facility_AI_number);";
                 $fuelResult = mysqli_query($connection, $fuelQuery);
                 
                 $fueled = array();
@@ -237,6 +237,7 @@
                                         <input type='hidden' name='Action' value='deleteLimit'/>
                                         <input type='hidden' name='Limit_id' value='{$limit["Limit_id"]}'/>
                                         <input type='hidden' name='Unit_id' value='{$unit["Unit_id"]}'/>
+                                        <input type='hidden'  name='Facility_AI_number' value='{$facilityInfo["Agency_interest_number"]}' />
                                         <input type='submit' value='X'/>
                                     </form>
                                 </td>
@@ -305,6 +306,7 @@
                 echo "<h2 style='align-self:center;'>Select Limit to Add</h2>";
                 echo "<input type='hidden' name='Action' value='addExistingLimit' />";
                 echo "<input type='hidden' id='addExistingLimitUnit' name='Unit_id' value='' />";
+                echo "<input type='hidden'  name='Facility_AI_number' value='{$facilityInfo["Agency_interest_number"]}' />";
                 echo "<select form='addExistingLimit' name='Limit_id'>";
                 $allLimitQuery = "SELECT * FROM emission_limit;";
                 $allLimitResult = mysqli_query($connection, $allLimitQuery);
@@ -334,6 +336,7 @@
                     <h2 style='align-self:center;'>Add Limit</h2> 
                     <input type='hidden' name='Action' value='addLimit' />
                     <input type='hidden' id='addLimitUnit' name='Unit_id' value='' />
+                    <input type='hidden' id='addLimitAI'  name='Facility_AI_number' value='{$facilityInfo["Agency_interest_number"]}' />
                     Parameter: <input form='addLimit' tyep='text' maxlength='35' name='Parameter' style='max-width:40ch;' />
                     <br/>
                     Limit: <input form='addLimit' type='number' step='0.001' max='9999' name='Limit' style='max-width:10ch;' /> units <input form='addLimit' type='text' name='Limit_units' maxlength='15' style='max-width:15ch;'/>
@@ -364,7 +367,7 @@
 
 <script>
     let AllUnits = [<?php
-            $unit_ids = mysqli_query($connection, "SELECT `Unit_id` FROM emission_unit;");
+            $unit_ids = mysqli_query($connection, "SELECT `Unit_id` FROM emission_unit WHERE Facility_AI_number='{$facilityInfo["Agency_interest_number"]}';");
             while($id = $unit_ids -> fetch_assoc()){
                 echo "'{$id["Unit_id"]}',";
             }
@@ -468,5 +471,4 @@
             return false;
         }
     })
-
 </script>
