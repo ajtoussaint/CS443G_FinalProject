@@ -65,4 +65,14 @@ To add a new facility click on the "Add New Facility" button at the top of the p
 
 By clicking on a specific facility on the facilities page you can access the details of the facility. On this page you can also add, edit, and delete emission units from the facility and add, emission limits to the units.
 
-To add a new unit click the "Add Unit" button and fill out the required information. Be aware that the Unit ID must be unique from other units in the facility 
+To add a new unit click the "Add Unit" button and fill out the required information and click "Add Unit" at the bottom of the form. Be aware that the Unit ID must be unique from other units in the facility. The unit name may be the same so if you have multiple units that are identical they can be given the same name as long as they have different IDs. The unit capacity will be rounded to the nearest tenth and fuel consumption will be rounded to the nearest hundreth.
+
+To edit the information of a unit once it has been added click the edit button associated with that unit. Once you have made your edits either save them by clicking update or discard them by clicking cancel.
+
+To delete a unit from the database simply click the delete button and confrim that you wish to delete the unit.
+
+To add an emission limit to a specific unit click the "Add Limit" button associated with that unit and scroll to the top of the page. You will have the option of reusing existing limit or creating a new limit to add to the unit.
+
+Once a limit has been added you can hover your mouse over the "i" icon to view additional details of the limit. 
+
+To delete a limit press the "X" button next to the limit. Be aware that once the last instance of a limit is deleted it will be removed from the list of existing limits that can be reused.
