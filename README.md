@@ -9,7 +9,7 @@
 ### 2. [Operation](#2operation)
 #### 2.1. [Navigating the Application](#21navigating-the-application)
 #### 2.2. [Regulations](#22regulations)
-#### 2.3. [Facilities](#23facilites)
+#### 2.3. [Facilities](#23facilities)
 #### 2.4 [Units and Limits](#24units-and-limits)
 
 ## 1.Installation
@@ -33,12 +33,36 @@ If you wish to run the application using a database name other than 'industry' c
 
 ## 2.Operation
 
-### 2.1 Navigating the Application
+### 2.1.Navigating the Application
 The structure of the application is as follows:\
 Industry\
 |_Index.php\
 |_Regulations.php\
 |_Facilities.php\
-__|_Facility.php\
+__|_Facility.php
 
 From the home page you can navigate to either the Regulations or Facilities page using the appropriate links. From either page you can also navigate back to the home page using the "Return to Home" link at the top of each page. From the Facilities page, if any facility data has been added, you can click on the Agency Interest Number or facility name shown in the table to navigate to a Facility Page that displays details about the facility including any emission units and what limits they are subject to. Each facility page also has a link to return to the list of all facilities.
+
+### 2.2.Regulations
+
+The regulations page will display a list of all regulations recorded in the database. From this page you can add, edit, or delete regulations.
+
+To add a new regulation to the list click the "Add New Regulation" button and include the regulations citation and text then click "Add Regulation". To cancel the addition click the X at the top right of the form. Once a regulation is added it should appear in the list below. Be aware that each regulation must have a unique citation. A regulation with a duplicate cittaion cannot be added.
+
+To edit an existing regulation's text click the edit button that is in the same table row as that regulation. A text input will appear allowing you to edit the text of the regulation. When you are finished click the update button to the right of the input box to save the changes or click cancel to discard them. Be aware that only one regulation may be edited at a time. To edit another regulation, first save or discard the changes to the regulation you are currently editing.
+
+To delete a regulation from the database simply click the delete button next to the regulation and confirm the deletion in the dialogue at the top of the web page.
+
+### 2.3.Facilities
+
+The facilities page includes an ordered list of facilities with their Agency interest (AI) numbers and names displayed. From this page you can add new facilites and navigate to the details of a specific facility by clicking on it.
+
+To change the odering of facilites select the desired parameters in the "Order By:" menu and click the filter button. 
+
+To add a new facility click on the "Add New Facility" button at the top of the page, input the facilities information into the form, and click add facility. Be aware that each facility must have a unique AI number, so a facility cannot be added if the AI number is already in use.
+
+### 2.4.Units and Limits
+
+By clicking on a specific facility on the facilities page you can access the details of the facility. On this page you can also add, edit, and delete emission units from the facility and add, emission limits to the units.
+
+To add a new unit click the "Add Unit" button and fill out the required information. Be aware that the Unit ID must be unique from other units in the facility 
