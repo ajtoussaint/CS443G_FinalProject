@@ -34,11 +34,11 @@ If you wish to run the application using a database name other than 'industry' c
 ## 2.Operation
 
 ### 2.1 Navigating the Application
-The structure of the application is as follows:
-Industry
-|_Index.php
-|_Regulations.php
-|_Facilities.php
-  |_Facility.php
+The structure of the application is as follows:\
+Industry\
+|_Index.php\
+|_Regulations.php\
+|_Facilities.php\
+__|_Facility.php\
 
 From the home page you can navigate to either the Regulations or Facilities page using the appropriate links. From either page you can also navigate back to the home page using the "Return to Home" link at the top of each page. From the Facilities page, if any facility data has been added, you can click on the Agency Interest Number or facility name shown in the table to navigate to a Facility Page that displays details about the facility including any emission units and what limits they are subject to. Each facility page also has a link to return to the list of all facilities.
