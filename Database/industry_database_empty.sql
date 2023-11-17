@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2023 at 08:42 PM
+-- Generation Time: Nov 17, 2023 at 11:44 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -24,16 +24,13 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `emission_limit`
+-- Table structure for table `unit_limits`
 --
 
-CREATE TABLE `emission_limit` (
+CREATE TABLE `unit_limits` (
+  `Unit_id` varchar(11) NOT NULL,
   `Limit_id` int(11) NOT NULL,
-  `Parameter` varchar(35) NOT NULL,
-  `Limit` decimal(7,3) NOT NULL,
-  `Limit_units` varchar(15) NOT NULL,
-  `Compliance_demonstration_method` varchar(250) DEFAULT NULL,
-  `Citation` varchar(20) DEFAULT NULL
+  `Facility_AI_number` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -41,21 +38,24 @@ CREATE TABLE `emission_limit` (
 --
 
 --
--- Indexes for table `emission_limit`
+-- Indexes for table `unit_limits`
 --
-ALTER TABLE `emission_limit`
-  ADD PRIMARY KEY (`Limit_id`),
-  ADD KEY `Citation` (`Citation`);
+ALTER TABLE `unit_limits`
+  ADD PRIMARY KEY (`Unit_id`,`Limit_id`,`Facility_AI_number`),
+  ADD KEY `unit_limits_ibfk_2` (`Limit_id`),
+  ADD KEY `unit_limits_ibfk_3` (`Facility_AI_number`);
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `emission_limit`
+-- Constraints for table `unit_limits`
 --
-ALTER TABLE `emission_limit`
-  ADD CONSTRAINT `emission_limit_ibfk_1` FOREIGN KEY (`Citation`) REFERENCES `regulation` (`Citation`);
+ALTER TABLE `unit_limits`
+  ADD CONSTRAINT `unit_limits_ibfk_1` FOREIGN KEY (`Unit_id`) REFERENCES `emission_unit` (`Unit_id`),
+  ADD CONSTRAINT `unit_limits_ibfk_2` FOREIGN KEY (`Limit_id`) REFERENCES `emission_limit` (`Limit_id`),
+  ADD CONSTRAINT `unit_limits_ibfk_3` FOREIGN KEY (`Facility_AI_number`) REFERENCES `emission_unit` (`Facility_AI_number`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
