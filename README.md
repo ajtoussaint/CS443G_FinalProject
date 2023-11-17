@@ -3,10 +3,10 @@
 # User Guide
 
 ## Table of Contetnts
-### 1. Installation and 
+### 1. Installation
 #### 1.1 Running Locally
 #### 1.2 Configuration
-### 2. Operation
+### 2. [Operation](##2operation)
 #### 2.1. Navigating the Application
 #### 2.2. Regulations
 #### 2.3. Facilities
