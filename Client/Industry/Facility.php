@@ -152,7 +152,7 @@
                     <input type='hidden' name='Action' value='addUnit'/>
                     <input type='hidden' name='Facility_AI_number' value='{$facilityInfo["Agency_interest_number"]}' />
                     <h3 style='margin:0;'>Unit ID:</h3>
-                    <input form='addUnit' type='text' name='Unit_id' maxlength='10' />
+                    <input form='addUnit' type='text' name='Unit_id' maxlength='10' id='Unit_id_input' />
                     <h3 style='margin:0;'>Unit Name:</h3>
                     <input form='addUnit' type='text' name='Name' maxlength='65' />
                     <h3 style='margin:0;'>Unit Capacity:</h3>
@@ -363,6 +363,12 @@
 </body>
 
 <script>
+    let AllUnits = [<?php
+            $unit_ids = mysqli_query($connection, "SELECT `Unit_id` FROM emission_unit;");
+            while($id = $unit_ids -> fetch_assoc()){
+                echo "'{$id["Unit_id"]}',";
+            }
+        ?>]
     $("#showUpdateForm").on('click', function() {
         $("#updateInfo").css("display", "block");
     })
@@ -453,6 +459,13 @@
         if($("#useNewLimit").prop("checked", true)){
             $("#addLimit").css("display", "flex");
             $("#addExistingLimit").css("display", "none");
+        }
+    })
+
+    $("#addUnit").on('submit', function(){
+        if(AllUnits.indexOf($("#Unit_id_input").val()) >= 0){
+            alert("A unit with this ID already exists, units must have unique IDs. Please choose a different ID and try again.");
+            return false;
         }
     })
 

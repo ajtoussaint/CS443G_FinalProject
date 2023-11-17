@@ -3,7 +3,13 @@
 </head>
 <body>
     <?php
-        echo "<h1 align='center'>Regulations</h1>";
+        function sanHTML($str){
+            return str_replace("'","&#39;",$str);
+        };
+        function sanSQL($str){
+            return str_replace("'","\'",$str);
+        };
+
         $connection  = mysqli_connect("localhost", "root", "");
         if (!$connection ) {
             //catch connection error
@@ -22,24 +28,20 @@
                         //TODO: ensure the citation doesnt already exist to prevent an error;
                         $addRegulationQuery = "INSERT INTO `regulation` VALUES('{$sanCitation}', '{$sanText}');";
                         $addRegulationResult = mysqli_query($connection, $addRegulationQuery);
-                        if($addRegulationResult){
-                            echo "<div align='center' style='color:green;'>Success! {$_POST["Citation"]} was added to the database</div>";
-                        }
                     break;
                     case "PUT":
                         $updateRegulationQuery = "UPDATE `regulation` SET `text`='{$sanText}' WHERE Citation='{$sanCitation}'";
                         $updateRegulationResult = mysqli_query($connection, $updateRegulationQuery);
-                        if($updateRegulationResult)
-                            echo "<div align='center' style='color:green;'>Success! {$_POST["Citation"]} was updated.</div>";
                     break;
                     case "REMOVE":
                         $deleteRegulationQuery = "DELETE FROM `regulation` WHERE Citation='{$sanCitation}'";
                         $deleteRegulationResult = mysqli_query($connection, $deleteRegulationQuery);
-                        if($deleteRegulationResult)
-                            echo "<div align='center' style='color:green;'>Success! {$_POST["Citation"]} was deleted.</div>";
                     break;
                 }
+                header("Location: {$_SERVER['REQUEST_URI']}", true, 301);
+                exit();
             }
+            echo "<h1 align='center'>Regulations</h1>";
             echo "<div align='center'>";
             echo "<a href='/Industry/Index.php'>Return to Home</a>";
             echo "</div>";
@@ -53,7 +55,7 @@
                 <form id='addReg' action="/Industry/Regulations.php" method="post" style='width:50%; min-width:20ch; border:solid; padding:1em; position:relative;' align='left'>
                     <input form='addReg' type='hidden' name='Action' value='POST' />
                     <h3 style='margin:0'>Citation</h3>
-                    <input form='addReg' type='text' name='Citation' maxlength='20'/>
+                    <input form='addReg' type='text' id='citationInput' name='Citation' maxlength='20'/>
                     <h3 style='margin:0'>Regulation Text:</h3>
                     <textarea form='addReg' id='textInput' name='text' maxlength='2500' style='resize:vertical; width:100%;'></textarea>
                     <div id='textCharsRemaining'>Remaining Characters:2500</div>
@@ -97,6 +99,15 @@
 </body>
 
 <script>
+    let allRegulationCitations = [];
+    <?php
+        $citations = mysqli_query($connection, "SELECT `Citation` FROM Regulation");
+        while($citation = $citations -> fetch_assoc()){
+            $cite = sanSQL($citation["Citation"]);
+            echo "allRegulationCitations.push('{$cite}');";
+        }
+    ?>
+
     $("#addRegulation").click( function (){
         $("#newRegForm").attr("style", "");
     })
@@ -167,6 +178,13 @@
         html += "<input form='deleteReg' type='submit' value='Delete Regualtion' style='color:red; margin:auto;'/>";
         html += "</form>";
         $("#confirmDelete").find("div").prepend(html);
+    })
+
+    $("#addReg").on('submit', function(){
+        if(allRegulationCitations.indexOf($("#citationInput").val()) >= 0){
+            alert("This citation already exists. Each regulation must have a unique citation. Please use a new citation and try again.");
+            return false;
+        }
     })
 
 </script>

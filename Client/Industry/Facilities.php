@@ -1,4 +1,10 @@
 <?php
+    function sanHTML($str){
+        return str_replace("'","&#39;",$str);
+    };
+    function sanSQL($str){
+        return str_replace("'","\'",$str);
+    };
     $configs = include('config.php');
     $connection  = mysqli_connect($configs['host'], $configs['username'], $configs['password']);
     if (!$connection ) {
@@ -43,7 +49,7 @@
     <div style='display:flex; justify-content:center;'>
         <form id='addFacilityForm' action='/Industry/Facilities.php' method='post' style='display:none; width:20%; min-width:20ch; border:solid; padding:1em; position:relative;'>
             <h3 style='margin:0;'>AI#:</h3>
-            <input form='addFacilityForm' type='number' name='Agency_interest_number' min='1' max='9999999' />
+            <input id="AIInput" form='addFacilityForm' type='number' name='Agency_interest_number' min='1' max='9999999' />
             <h3 style='margin:0;'>Name:</h3>
             <input form='addFacilityForm' type='text' name='Name' maxlength='65' />
             <h3 style='margin:0;'>Permit Number:</h3>
@@ -115,10 +121,27 @@
     ?>
 </body>
 <script>
+    let allFacilities = [];
+    <?php
+        $facilities = mysqli_query($connection, "SELECT `Agency_interest_number` FROM Facility");
+        while($facility = $facilities -> fetch_assoc()){
+            $AI = sanSQL($facility["Agency_interest_number"]);
+            echo "allFacilities.push('{$AI}');";
+        }
+    ?>
+
     $("#addFacility").on('click', function() {
         $("#addFacilityForm").css("display", "block");
     })
     $("#closeAddFacilityForm").on('click', function() {
         $("#addFacilityForm").css("display", "none");
     })
+    //prevent primary key duplicates
+    $("#addFacilityForm").on('submit', function(){
+        if(allFacilities.indexOf($("#AIInput").val()) >= 0){
+            alert("A facility with this AI number already exists. Please choose a different AI number.");
+            return false;
+        }
+    })
+    
 </script>
