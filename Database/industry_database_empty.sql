@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2023 at 11:44 PM
+-- Generation Time: Dec 05, 2023 at 12:12 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -18,8 +18,73 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `industry`
+-- Database: `industry_empty`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emission_limit`
+--
+
+CREATE TABLE `emission_limit` (
+  `Limit_id` int(11) NOT NULL,
+  `Parameter` varchar(35) NOT NULL,
+  `Limit` decimal(7,3) NOT NULL,
+  `Limit_units` varchar(15) NOT NULL,
+  `Compliance_demonstration_method` varchar(250) DEFAULT NULL,
+  `Citation` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emission_unit`
+--
+
+CREATE TABLE `emission_unit` (
+  `Unit_id` varchar(10) NOT NULL,
+  `Name` varchar(65) NOT NULL,
+  `Capacity` decimal(7,1) DEFAULT NULL,
+  `Capacity_units` varchar(15) DEFAULT NULL,
+  `Facility_AI_number` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facility`
+--
+
+CREATE TABLE `facility` (
+  `Agency_interest_number` int(11) NOT NULL,
+  `Name` varchar(65) NOT NULL,
+  `Permit_number` varchar(11) DEFAULT NULL,
+  `Address` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fueled_units`
+--
+
+CREATE TABLE `fueled_units` (
+  `Unit_id` varchar(11) NOT NULL,
+  `Fuel_consumption` decimal(7,2) NOT NULL,
+  `Facility_AI_number` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `regulation`
+--
+
+CREATE TABLE `regulation` (
+  `Citation` varchar(20) NOT NULL,
+  `text` varchar(2500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -38,6 +103,39 @@ CREATE TABLE `unit_limits` (
 --
 
 --
+-- Indexes for table `emission_limit`
+--
+ALTER TABLE `emission_limit`
+  ADD PRIMARY KEY (`Limit_id`),
+  ADD KEY `Citation` (`Citation`);
+
+--
+-- Indexes for table `emission_unit`
+--
+ALTER TABLE `emission_unit`
+  ADD PRIMARY KEY (`Unit_id`,`Facility_AI_number`),
+  ADD KEY `Facility_AI_number` (`Facility_AI_number`);
+
+--
+-- Indexes for table `facility`
+--
+ALTER TABLE `facility`
+  ADD PRIMARY KEY (`Agency_interest_number`);
+
+--
+-- Indexes for table `fueled_units`
+--
+ALTER TABLE `fueled_units`
+  ADD PRIMARY KEY (`Unit_id`,`Facility_AI_number`),
+  ADD KEY `fueled_units_ibfk_2` (`Facility_AI_number`);
+
+--
+-- Indexes for table `regulation`
+--
+ALTER TABLE `regulation`
+  ADD PRIMARY KEY (`Citation`);
+
+--
 -- Indexes for table `unit_limits`
 --
 ALTER TABLE `unit_limits`
@@ -48,6 +146,25 @@ ALTER TABLE `unit_limits`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `emission_limit`
+--
+ALTER TABLE `emission_limit`
+  ADD CONSTRAINT `emission_limit_ibfk_1` FOREIGN KEY (`Citation`) REFERENCES `regulation` (`Citation`);
+
+--
+-- Constraints for table `emission_unit`
+--
+ALTER TABLE `emission_unit`
+  ADD CONSTRAINT `emission_unit_ibfk_1` FOREIGN KEY (`Facility_AI_number`) REFERENCES `facility` (`Agency_interest_number`);
+
+--
+-- Constraints for table `fueled_units`
+--
+ALTER TABLE `fueled_units`
+  ADD CONSTRAINT `fueled_units_ibfk_1` FOREIGN KEY (`Unit_id`) REFERENCES `emission_unit` (`Unit_id`),
+  ADD CONSTRAINT `fueled_units_ibfk_2` FOREIGN KEY (`Facility_AI_number`) REFERENCES `emission_unit` (`Facility_AI_number`);
 
 --
 -- Constraints for table `unit_limits`
